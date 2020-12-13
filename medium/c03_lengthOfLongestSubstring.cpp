@@ -1,3 +1,18 @@
+/*
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+
+ 示例 1:
+
+ 输入: s = "abcabcbb"
+ 输出: 3
+ 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+ 示例 2:
+
+ 输入: s = "bbbbb"
+ 输出: 1
+ 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+ 示例 3:
+
  输入: s = "pwwkew"
  输出: 3
  解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
@@ -23,21 +38,25 @@
 
 using namespace std;
 
-int lengthOfLongestSubstring(string str)
+int lengthOfLongestSubstring(string s)
 {
-	unsigned int max_ = 0;
-	unsigned int j = 0, i = 0;
-	unordered_set<char> set;
-	for (i = 0; i < str.size(); ++i) {
-		set.insert(str[i]);
-		for (j = i+1; (j < str.size() && set.count(str[j]) != 1); ++j) {
-			set.insert(str[j]);
+	// sliding window
+	unordered_set<char> occ;
+	int n = s.size();
+	int rk = -1, ans = 0;
+	for (int i = 0; i < n; ++i) {
+		if (i != 0) {
+			occ.erase(s[i - 1]);
 		}
-		max_ = max(max_, j - i);
-		set.erase(str[i]);
+		while (rk + 1 < n && !occ.count(s[rk + 1])) {  // .count always returns 0 or 1
+			occ.insert(s[rk + 1]);
+			++rk;
+		}
+		ans = max(ans, rk - i + 1);
 	}
-	return max_;
+	return ans;
 }
+
 
 int main()
 {
